@@ -7,9 +7,13 @@ echo "Starting Laravel Docker initialization..."
 PROJECT_ROOT="$(pwd)"
 
 # Step 0: Ensure mysql.env exists
-if [ ! -f "$PROJECT_ROOT/mysql.env" ]; then
+if [ ! -f "$PROJECT_ROOT/env/mysql.env" ]; then
     echo "mysql.env not found. Copying from env_example..."
-    cp "$PROJECT_ROOT/env_example" "$PROJECT_ROOT/mysql.env"
+    mkdir -p "$PROJECT_ROOT/env"
+    cp -r "$PROJECT_ROOT/env_example/mysql.env" "$PROJECT_ROOT/env/mysql.env"
+    echo "mysql.env created from env_example."
+else
+    echo "mysql.env already exists."
 fi
 
 # Step 0.5: Ensure .env exists
