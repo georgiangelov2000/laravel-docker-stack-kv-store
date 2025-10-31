@@ -89,50 +89,19 @@ curl -X DELETE http://localhost:8000/api/v1/kv/delete   -H "Content-Type: applic
 
 ---
 
-## 🧰 Common Docker Commands
-
-```bash
-# Start / Stop
-docker compose up -d
-docker compose down
-
-# Access PHP container
-docker compose exec app bash
-
-# Run Artisan commands
-docker compose exec app php artisan migrate
-docker compose exec app php artisan tinker
-```
-
----
-
 ## 💣 Cleanup Scripts
 
 | Script | Purpose |
 |---------|----------|
 | `init.sh` | Build containers, start stack, and run migrations |
-| `nuke-everything.sh` | **Deletes ALL** Docker containers, images, volumes, and networks (irreversible) |
+| `nuke.sh` | **Deletes ALL** Docker containers, images, volumes, and networks (irreversible) |
 
 **Usage**
 ```bash
 # Full reset
-./nuke-everything.sh
+./nuke.sh
 # Fresh rebuild
 ./init.sh
-```
-
----
-
-## ⚙️ Environment
-
-`.env` example:
-```dotenv
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=laravel_user
-DB_PASSWORD=laravel_password
 ```
 
 ---
@@ -158,12 +127,4 @@ DB_PASSWORD=laravel_password
 - **Repositories** → abstract data access  
 - **Models** → represent database entities  
 
----
-
-## 🏁 Summary
-
-| Command | Description |
-|----------|--------------|
-| `./init.sh` | Initialize and migrate Laravel containers |
-| `./nuke-everything.sh` | Wipe all Docker data |
 ---

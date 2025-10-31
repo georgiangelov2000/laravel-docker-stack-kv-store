@@ -17,9 +17,9 @@ else
 fi
 
 # Step 0.5: Ensure .env exists
-if [ ! -f "$PROJECT_ROOT/.env" ]; then
+if [ ! -f "$PROJECT_ROOT/app/.env" ]; then
     echo ".env not found. Copying from .env.example..."
-    cp "$PROJECT_ROOT/.env.example" "$PROJECT_ROOT/.env"
+    cp "$PROJECT_ROOT/app/.env.example" "$PROJECT_ROOT/app/.env"
 fi
 
 # Step 1: Build and start all containers
