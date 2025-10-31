@@ -1,7 +1,6 @@
 /vendor
 /node_modules
 .env
-.env.*
 /bootstrap/cache/*.php
 /storage/*.key
 /storage/logs

@@ -29,6 +29,7 @@ docker compose -f "$PROJECT_ROOT/docker-compose.yml" up -d --build
 # Step 2: Run migrations inside the app container
 echo "Running database migrations..."
 docker compose exec -T app php artisan migrate --force
+docker compose exec -T app php artisan key:generate
 
 echo "✅ Initialization complete!"
 echo "🌐 Visit: http://localhost:8000"
