@@ -26,10 +26,28 @@ fi
 echo "Building and starting containers..."
 docker compose -f "$PROJECT_ROOT/docker-compose.yml" up -d --build
 
-# Step 2: Run migrations inside the app container
-echo "Running database migrations..."
-docker compose exec -T app php artisan migrate --force
-docker compose exec -T app php artisan key:generate
+# Step 1.5: Install composer dependencies if vendor doesn't exist
+if [ ! -d "$PROJECT_ROOT/app/vendor" ]; then
+    echo "vendor directory not found. Running composer install..."
+    docker compose exec -T app composer install
+    echo "Composer dependencies installed."
+else
+    echo "vendor directory exists. Skipping composer install."
+fi
 
-echo "✅ Initialization complete!"
-echo "🌐 Visit: http://localhost:8000"
+# Step 2: Run database migrations
+echo "Running database migrations..."
+docker compose exec app php artisan migrate
+docker compose exec app php artisan key:generate
+
+# Step 3: Generate application key
+echo "Generating application key..."
+docker compose exec app php artisan key:generate
+
+# Step 4: Refresh Laravel configuration cache
+echo "Refreshing configurations..."
+docker compose exec app php artisan optimize:clear
+
+
+echo "Initialization complete!"
+echo "Visit: http://localhost:8000"
