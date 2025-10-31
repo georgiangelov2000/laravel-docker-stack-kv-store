@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     restart: unless-stopped
-    working_dir: /var/www
     volumes:
       - ./app:/var/www/app
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
