@@ -41,6 +41,7 @@ A Laravel 12 Dockerized environment featuring two SOLID-based modules:
 ### Start Everything
 ```bash
 git clone https://github.com/georgiangelov2000/laravel-docker-stack-kv-store.git
+cd laravel-docker-stack-kv-store/
 chmod +x init.sh
 ./init.sh
 ```
