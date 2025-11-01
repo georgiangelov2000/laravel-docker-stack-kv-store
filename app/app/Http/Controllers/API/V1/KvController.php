@@ -7,8 +7,8 @@ use App\Contracts\Services\KvServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\KvSetRequest;
 use App\Http\Requests\KvDeleteRequest;
+use App\Http\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 final class KvController extends Controller
 {
@@ -23,21 +23,38 @@ final class KvController extends Controller
             $request->input('ttl')
         );
 
-        return response()->json(['ok' => true], Response::HTTP_CREATED);
+        return ApiResponse::created(
+            'Key-value pair stored successfully',
+            ['key' => $request->input('key')]
+        );
     }
 
-    // POST /api/v1/kv/get
+    // GET /api/v1/kv/get/{key}
     public function get(string $key): JsonResponse
     {
         $value = $this->service->getOrNull($key);
-        return response()->json(['ok' => true, 'value' => $value]);
+        
+        if ($value === null) {
+            return ApiResponse::notFound('Key not found or expired');
+        }
+
+        return ApiResponse::success(
+            'Value retrieved successfully',
+            ['key' => $key, 'value' => $value]
+        );
     }
+
 
 
     // DELETE /api/v1/kv/delete
     public function delete(KvDeleteRequest $request): JsonResponse
     {
-        $this->service->delete($request->input('key'));
-        return response()->json(['ok' => true]);
+        $key = $request->input('key');
+        $this->service->delete($key);
+        
+        return ApiResponse::success(
+            'Key deleted successfully',
+            ['key' => $key]
+        );
     }
 }

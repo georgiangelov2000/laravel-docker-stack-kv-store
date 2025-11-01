@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Services;
+
 use App\Contracts\Repositories\StackItemRepositoryInterface;
 use App\Contracts\Services\StackServiceInterface;
 use App\Exceptions\EmptyStackException;
@@ -9,39 +10,56 @@ use Illuminate\Support\Facades\DB;
 
 class StackService implements StackServiceInterface
 {
-    public function __construct(private readonly StackItemRepositoryInterface $repo) {}
+    public function __construct(
+        private readonly StackItemRepositoryInterface $repo
+    ) {}
 
-    public function push(string $stack, $value): int
+    /**
+     * Push a new value onto the stack.
+     *
+     * @param  string  $value
+     * @return int  The ID of the created record.
+     */
+    public function push(string $value): int
     {
-        return $this->repo->create($stack, $value)->id;
+        return $this->repo->create($value)->id;
     }
 
-    public function popOrNull(string $stack)
+    /**
+     * Pop the top value or return null if the stack is empty.
+     *
+     * @return string|null
+     */
+    public function popOrNull(): ?string
     {
         $payload = null;
 
-        DB::transaction(function () use ($stack, &$payload) {
-            $top = $this->repo->findTopForUpdate($stack);
-            if ($top) {
-                $payload = $top->payload;
+        DB::transaction(function () use (&$payload): void {
+            $top = $this->repo->findTopForUpdate();
+            if ($top !== null) {
+                $payload = (string) $top->payload;
                 $this->repo->deleteById($top->id);
             }
-        }, 3);
+        });
 
         return $payload;
     }
 
-    public function pop(string $stack)
+    /**
+     * Pop the top value or throw an exception if empty.
+     *
+     * @return string
+     *
+     * @throws EmptyStackException
+     */
+    public function pop(): string
     {
-        $value = $this->popOrNull($stack);
-        if ($value === null) {
-            throw new EmptyStackException("Stack '{$stack}' is empty.");
-        }
-        return $value;
-    }
+        $value = $this->popOrNull();
 
-    public function size(string $stack): int
-    {
-        return $this->repo->countByStack($stack);
+        if ($value === null) {
+            throw new EmptyStackException('Stack is empty.');
+        }
+
+        return $value;
     }
 }

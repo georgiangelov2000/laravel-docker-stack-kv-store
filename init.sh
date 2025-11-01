@@ -37,10 +37,8 @@ fi
 
 # Step 2: Run database migrations
 echo "Running database migrations..."
-docker compose exec app php artisan migrate
-docker compose exec app php artisan key:generate
-
-# Step 3: Generate application key
+sleep 10
+docker compose exec app php artisan migrate --force
 echo "Generating application key..."
 docker compose exec app php artisan key:generate
 

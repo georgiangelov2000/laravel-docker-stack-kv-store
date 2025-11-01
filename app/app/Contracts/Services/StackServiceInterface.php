@@ -6,13 +6,11 @@ namespace App\Contracts\Services;
 interface StackServiceInterface
 {
     /** Returns created row id */
-    public function push(string $stack, $value): int;
+    public function push(string $value): int;
 
     /** Pop and return top payload; null if empty */
-    public function popOrNull(string $stack);
+    public function popOrNull();
 
     /** Strict pop; throws if empty */
-    public function pop(string $stack);
-
-    public function size(string $stack): int;
+    public function pop();
 }

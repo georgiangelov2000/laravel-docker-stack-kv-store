@@ -27,4 +27,19 @@ class KvSetRequest extends FormRequest
             'ttl' => ['nullable','integer','min:1','max:31536000'], // up to 1y
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'key.required' => 'The key field is required.',
+            'key.string' => 'The key must be a valid string.',
+            'key.max' => 'The key may not be longer than 191 characters.',
+
+            'value.required' => 'The value field cannot be empty.',
+
+            'ttl.integer' => 'The TTL must be an integer value (in seconds).',
+            'ttl.min' => 'The TTL must be at least 1 second.',
+            'ttl.max' => 'The TTL cannot exceed 31,536,000 seconds (1 year).',
+        ];
+    }
 }

@@ -7,10 +7,10 @@ use App\Models\StackItem;
 
 interface StackItemRepositoryInterface
 {
-    public function create(string $stack, $payload): StackItem;
+    public function create(string $payload): StackItem;
 
     /** Lock newest by stack (LIFO) for safe pop; returns null if empty */
-    public function findTopForUpdate(string $stack): ?StackItem;
+    public function findTopForUpdate(): ?StackItem;
 
     public function deleteById(int $id): void;
 

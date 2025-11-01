@@ -9,11 +9,9 @@ class StackItem extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
     protected $table = 'stack_items';
-    protected $fillable = ['stack_name', 'payload', 'pushed_at'];
+    protected $fillable = ['payload'];
     protected $casts = [
         'payload'   => 'array',   // JSON <-> array
-        'pushed_at' => 'datetime',
     ];
 }

@@ -8,20 +8,18 @@ use App\Models\StackItem;
 
 class EloquentStackItemRepository implements StackItemRepositoryInterface
 {
-    public function create(string $stack, $payload): StackItem
+    public function create(string $payload): StackItem
     {
         return StackItem::create([
-            'stack_name' => $stack,
             'payload'    => $payload,
             'pushed_at'  => now(),
         ]);
     }
 
-    public function findTopForUpdate(string $stack): ?StackItem
+    public function findTopForUpdate(): ?StackItem
     {
         // LIFO: highest id; lock to prevent concurrent pop collisions
-        return StackItem::where('stack_name', $stack)
-            ->orderByDesc('id')
+        return StackItem::orderByDesc('id')
             ->lockForUpdate()
             ->first();
     }

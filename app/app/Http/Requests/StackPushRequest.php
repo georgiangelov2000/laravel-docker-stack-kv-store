@@ -23,7 +23,15 @@ class StackPushRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'value' => ['required'],
+            'value' => ['required', 'string'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'value.required' => 'The value field is required.',
+            'value.string'   => 'The value must be a valid string.',
         ];
     }
 }

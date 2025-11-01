@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\StackController;
-use App\Http\Controllers\Api\V1\KvController;
+use App\Http\Controllers\API\V1\StackController;
+use App\Http\Controllers\API\V1\KvController;
 
 Route::middleware('api')->prefix('v1')->group(function () {
 
@@ -12,6 +13,6 @@ Route::middleware('api')->prefix('v1')->group(function () {
 
     // --- Key–Value store ---
     Route::post('/kv/add',      [KvController::class, 'set']);       // Add to key-value store (optional TTL)
-    Route::get('/kv/get',       [KvController::class, 'get']);       // Get from key-value store
+    Route::get('/kv/get/{key}',     [KvController::class, 'get']);       // Get from key-value store by key
     Route::delete('/kv/delete', [KvController::class, 'delete']);    // Delete from key-value store
 });

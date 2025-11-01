@@ -7,32 +7,33 @@ use App\Contracts\Services\StackServiceInterface;
 use App\Exceptions\EmptyStackException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StackPushRequest;
-use App\Http\Resources\StackPopResource;
+use App\Http\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
-class StackController extends Controller
+final class StackController extends Controller
 {
     public function __construct(private readonly StackServiceInterface $service) {}
 
-    public function push(string $name, StackPushRequest $request): JsonResponse
+    public function push(StackPushRequest $request): JsonResponse
     {
-        $id = $this->service->push($name, $request->input('value'));
-        return response()->json(['ok' => true, 'id' => $id], Response::HTTP_CREATED);
+        $this->service->push($request->input('value'));
+
+        return ApiResponse::created(
+            'Item added to stack successfully',
+            ['value' => $request->input('value')]
+        );
     }
 
-    public function pop(string $name): StackPopResource|JsonResponse
+    public function pop(): JsonResponse
     {
         try {
-            $value = $this->service->pop($name);
-            return new StackPopResource($value);
+            $value = $this->service->pop();
+            return ApiResponse::success(
+                'Item popped from stack successfully',
+                ['value' => $value]
+            );
         } catch (EmptyStackException $e) {
-            return response()->json(['ok' => true, 'value' => null], 200);
+            return ApiResponse::notFound('Stack is empty');
         }
-    }
-
-    public function size(string $name): JsonResponse
-    {
-        return response()->json(['ok' => true, 'size' => $this->service->size($name)]);
     }
 }
