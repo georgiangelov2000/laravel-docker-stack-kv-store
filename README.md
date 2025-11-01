@@ -175,3 +175,15 @@ curl -X DELETE http://localhost:8000/api/v1/kv/delete \
 - **Models** → represent database entities  
 
 ---
+
+## TestsRunning Tests
+
+```
+Test File	Purpose
+StackApiTest.php	Validates LIFO stack push/pop behavior
+KvApiTest.php	Validates key-value store set/get/delete + TTL logic
+
+Run tests inside the Docker container:
+
+docker compose exec app php artisan test
+```

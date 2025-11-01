@@ -9,5 +9,4 @@ interface KvRepositoryInterface
     public function upsert(string $key, $value, ?int $ttlSeconds): KvItem;
     public function findValid(string $key): ?KvItem;  // returns null if not found/expired
     public function delete(string $key): void;
-    public function purgeExpired(): int;
 }

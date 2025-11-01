@@ -82,17 +82,4 @@ class EloquentKvRepository implements KvRepositoryInterface
     {
         KvItem::where('k', $key)->delete();
     }
-
-
-    /**
-     * Remove all expired key-value records.
-     *
-     * @return int  Number of deleted records
-     */
-    public function purgeExpired(): int
-    {
-        return KvItem::whereNotNull('expires_at')
-            ->where('expires_at', '<=', Carbon::now())
-            ->delete();
-    }
 }
