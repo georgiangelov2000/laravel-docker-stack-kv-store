@@ -14,5 +14,4 @@ interface StackItemRepositoryInterface
 
     public function deleteById(int $id): void;
 
-    public function countByStack(string $stack): int;
 }

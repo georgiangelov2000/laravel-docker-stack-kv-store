@@ -12,9 +12,16 @@ use Illuminate\Http\JsonResponse;
 
 final class KvController extends Controller
 {
-    public function __construct(private readonly KvServiceInterface $service) {}
+    public function __construct(
+        private readonly KvServiceInterface $service
+    ) {}
 
-    // POST /api/v1/kv/set
+    /**
+     * Store or update a key-value pair with an optional TTL.
+     *
+     * @param  KvSetRequest  $request
+     * @return JsonResponse
+     */
     public function set(KvSetRequest $request): JsonResponse
     {
         $this->service->set(
@@ -29,11 +36,16 @@ final class KvController extends Controller
         );
     }
 
-    // GET /api/v1/kv/get/{key}
+    /**
+     * Retrieve a value by its key.
+     *
+     * @param  string  $key
+     * @return JsonResponse
+     */
     public function get(string $key): JsonResponse
     {
         $value = $this->service->getOrNull($key);
-        
+
         if ($value === null) {
             return ApiResponse::notFound('Key not found or expired');
         }
@@ -44,14 +56,17 @@ final class KvController extends Controller
         );
     }
 
-
-
-    // DELETE /api/v1/kv/delete
+    /**
+     * Delete a key-value pair from the store.
+     *
+     * @param  KvDeleteRequest  $request
+     * @return JsonResponse
+     */
     public function delete(KvDeleteRequest $request): JsonResponse
     {
         $key = $request->input('key');
         $this->service->delete($key);
-        
+
         return ApiResponse::success(
             'Key deleted successfully',
             ['key' => $key]

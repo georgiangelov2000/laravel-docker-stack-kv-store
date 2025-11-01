@@ -12,8 +12,16 @@ use Illuminate\Http\JsonResponse;
 
 final class StackController extends Controller
 {
-    public function __construct(private readonly StackServiceInterface $service) {}
+    public function __construct(
+        private readonly StackServiceInterface $service
+    ) {}
 
+    /**
+     * Handle request to push a new value onto the stack.
+     *
+     * @param  StackPushRequest  $request
+     * @return JsonResponse
+     */
     public function push(StackPushRequest $request): JsonResponse
     {
         $this->service->push($request->input('value'));
@@ -24,10 +32,17 @@ final class StackController extends Controller
         );
     }
 
+
+    /**
+     * Handle request to pop the top value from the stack.
+     *
+     * @return JsonResponse
+     */
     public function pop(): JsonResponse
     {
         try {
             $value = $this->service->pop();
+
             return ApiResponse::success(
                 'Item popped from stack successfully',
                 ['value' => $value]

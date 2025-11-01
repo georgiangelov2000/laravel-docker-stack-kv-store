@@ -60,9 +60,30 @@ This will:
 
 **Example**
 ```bash
-curl -X POST http://localhost:8000/api/v1/stack/add   -H "Content-Type: application/json"   -d '{"name":"main","value":"Hello"}'
+#Add "Hello" to stack
+curl -X POST http://localhost:8000/api/v1/stack/add \
+  -H "Content-Type: application/json" \
+  -d '{"value":"Hello"}'
 
+#Add "World" to stack
+curl -X POST http://localhost:8000/api/v1/stack/add \
+  -H "Content-Type: application/json" \
+  -d '{"value":"World"}'
+
+#Get (pop) top item — should return "World"
 curl http://localhost:8000/api/v1/stack/get
+
+#Add "Again" to stack
+curl -X POST http://localhost:8000/api/v1/stack/add \
+  -H "Content-Type: application/json" \
+  -d '{"value":"Again"}'
+
+#Get (pop) top item — should return "Again"
+curl http://localhost:8000/api/v1/stack/get
+
+#Get (pop) next item — should return "Hello"
+curl http://localhost:8000/api/v1/stack/get
+
 ```
 
 ---
