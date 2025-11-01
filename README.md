@@ -51,6 +51,12 @@ This will:
 
 ---
 
+CONTAINER ID   IMAGE                               PORTS                                                    NAMES
+3a8bbc2ce1c3   nginx:alpine                        0.0.0.0:8000->80/tcp, [::]:8000->80/tcp                  laravel_nginx
+37f989c2302e   laravel-docker-stack-kv-store-app   9000/tcp                                                 laravel_app
+11cf60e2b2bd   mysql:8.0                           0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp   laravel_mysql
+
+
 ## 🧱 Stack (LIFO)
 
 | Method | Endpoint | Description |
@@ -98,14 +104,32 @@ curl http://localhost:8000/api/v1/stack/get
 
 **Example**
 ```bash
-# Add
-curl -X POST http://localhost:8000/api/v1/kv/add   -H "Content-Type: application/json"   -d '{"key":"name","value":"John","ttl":30}'
+# 1) Set "name" = "John"  (no TTL)
+curl -X POST http://localhost:8000/api/v1/kv/add \
+  -H "Content-Type: application/json" \
+  -d '{"key":"name","value":"John"}'
 
-# Get
+# 2) Get "name"  → returns "John"
 curl http://localhost:8000/api/v1/kv/get/name
 
-# Delete
-curl -X DELETE http://localhost:8000/api/v1/kv/delete   -H "Content-Type: application/json"   -d '{"key":"name"}'
+# 3) Get "age" (never set)  → returns empty/not found
+curl http://localhost:8000/api/v1/kv/get/age
+
+# 4) Overwrite "name" = "Larry" with TTL = 30s
+curl -X POST http://localhost:8000/api/v1/kv/add \
+  -H "Content-Type: application/json" \
+  -d '{"key":"name","value":"Larry","ttl":30}'
+
+# 5) Get "name" within 30s  → returns "Larry"
+curl http://localhost:8000/api/v1/kv/get/name
+
+# 6) Get "name" after >30s  → returns empty/not found (expired)
+curl http://localhost:8000/api/v1/kv/get/name
+
+# 7) Delete a key explicitly (body carries the key)
+curl -X DELETE http://localhost:8000/api/v1/kv/delete \
+  -H "Content-Type: application/json" \
+  -d '{"key":"name"}'
 ```
 
 ---
