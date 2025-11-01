@@ -36,9 +36,9 @@ A Laravel 12 Dockerized environment featuring two SOLID-based modules:
 
 ---
 
-## 🚀 Quick Setup
+## Quick Setup
 
-### 1️⃣ Start Everything
+### Start Everything
 ```bash
 chmod +x init.sh
 ./init.sh
@@ -51,13 +51,14 @@ This will:
 
 ---
 
-CONTAINER ID   IMAGE                               PORTS                                                    NAMES
-3a8bbc2ce1c3   nginx:alpine                        0.0.0.0:8000->80/tcp, [::]:8000->80/tcp                  laravel_nginx
-37f989c2302e   laravel-docker-stack-kv-store-app   9000/tcp                                                 laravel_app
-11cf60e2b2bd   mysql:8.0                           0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp   laravel_mysql
+```bash
+|CONTAINER ID  | IMAGE                              | PORTS                                                   | NAMES
+|3a8bbc2ce1c3  | nginx:alpine                       | 0.0.0.0:8000->80/tcp, [::]:8000->80/tcp                 | laravel_nginx
+|37f989c2302e  | laravel-docker-stack-kv-store-app  | 9000/tcp                                                | laravel_app
+|11cf60e2b2bd  | mysql:8.0                          | 0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp  | laravel_mysql
+```
 
-
-## 🧱 Stack (LIFO)
+## Stack (LIFO)
 
 | Method | Endpoint | Description |
 |---------|-----------|-------------|
@@ -94,7 +95,7 @@ curl http://localhost:8000/api/v1/stack/get
 
 ---
 
-## 🗝️ Key-Value Store
+## Key-Value Store
 
 | Method | Endpoint | Description |
 |---------|-----------|-------------|
@@ -134,7 +135,7 @@ curl -X DELETE http://localhost:8000/api/v1/kv/delete \
 
 ---
 
-## 💣 Cleanup Scripts
+## Cleanup Scripts
 
 | Script | Purpose |
 |---------|----------|
@@ -151,7 +152,7 @@ curl -X DELETE http://localhost:8000/api/v1/kv/delete \
 
 ---
 
-## 🧠 Architecture Overview
+## Architecture Overview
 
 ```
 [ HTTP Client ]
