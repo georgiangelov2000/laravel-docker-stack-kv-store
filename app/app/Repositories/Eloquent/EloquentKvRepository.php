@@ -6,6 +6,7 @@ namespace App\Repositories\Eloquent;
 use App\Contracts\Repositories\KvRepositoryInterface;
 use App\Models\KvItem;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class EloquentKvRepository implements KvRepositoryInterface
 {
@@ -19,12 +20,28 @@ class EloquentKvRepository implements KvRepositoryInterface
      */
     public function upsert(string $key, mixed $value, ?int $ttlSeconds): KvItem
     {
-        $expiresAt = $ttlSeconds ? Carbon::now()->addSeconds($ttlSeconds) : null;
+        return DB::transaction(function () use ($key, $value, $ttlSeconds) {
+            $expiresAt = $ttlSeconds ? Carbon::now()->addSeconds($ttlSeconds) : null;
 
-        return KvItem::updateOrCreate(
-            ['k' => $key],
-            ['v' => $value, 'expires_at' => $expiresAt]
-        );
+            $item = KvItem::where('k', $key)->lockForUpdate()->first();
+
+            if ($item !== null) {
+                $item->fill([
+                    'v' => $value,
+                    'expires_at' => $expiresAt,
+                ]);
+
+                $item->save();
+
+                return $item->refresh();
+            }
+
+            return KvItem::create([
+                'k' => $key,
+                'v' => $value,
+                'expires_at' => $expiresAt,
+            ]);
+        });
     }
 
 
@@ -36,20 +53,22 @@ class EloquentKvRepository implements KvRepositoryInterface
      */
     public function findValid(string $key): ?KvItem
     {
-        $now = Carbon::now();
-        $item = KvItem::where('k', $key)->first();
+        return DB::transaction(function () use ($key) {
+            $now = Carbon::now();
+            $item = KvItem::where('k', $key)->lockForUpdate()->first();
 
-        if (!$item) {
-            return null;
-        }
+            if ($item === null) {
+                return null;
+            }
 
-        if ($item->expires_at && $item->expires_at->lte($now)) {
-            // Hard-expired: remove and treat as not found
-            $item->delete();
-            return null;
-        }
+            if ($item->expires_at && $item->expires_at->lte($now)) {
+                // Hard-expired: remove and treat as not found
+                $item->delete();
+                return null;
+            }
 
-        return $item;
+            return $item;
+        });
     }
 
 
