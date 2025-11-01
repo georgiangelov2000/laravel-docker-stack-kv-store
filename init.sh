@@ -29,7 +29,7 @@ docker compose -f "$PROJECT_ROOT/docker-compose.yml" up -d --build
 # Step 1.5: Install composer dependencies if vendor doesn't exist
 if [ ! -d "$PROJECT_ROOT/app/vendor" ]; then
     echo "vendor directory not found. Running composer install..."
-    docker compose exec -T app composer install
+    docker compose exec app composer install
     echo "Composer dependencies installed."
 else
     echo "vendor directory exists. Skipping composer install."
